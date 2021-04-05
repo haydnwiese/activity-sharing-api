@@ -1,15 +1,16 @@
 import express from 'express';
+import Controller from './controllers/controller';
 
 const PORT = 3000;
 
 export default class App {
     private app: express.Application;
 
-    constructor() {
+    constructor(controllers: Controller[]) {
         this.app = express();
 
         this.initializeMiddleware();
-        this.initializeControllers();
+        this.initializeControllers(controllers);
     }
 
     public listen() {
@@ -22,7 +23,9 @@ export default class App {
         this.app.use(express.json());
     }
 
-    private initializeControllers() {
-
+    private initializeControllers(controllers: Controller[]) {
+        controllers.forEach(controller => {
+            this.app.use(controller.path, controller.router);
+        })
     }
 }

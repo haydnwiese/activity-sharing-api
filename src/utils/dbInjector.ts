@@ -3,7 +3,7 @@ import { Knex, knex } from 'knex';
 
 let cachedConnection: Knex;
 
-export const getDb = () => {
+export const getKnexInstance = () => {
     if (cachedConnection != null) {
         console.log("Cached connection");
         return cachedConnection;
