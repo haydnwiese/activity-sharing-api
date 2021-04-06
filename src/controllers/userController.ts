@@ -1,9 +1,6 @@
-import { NextFunction, Router, Request, Response } from "express";
+import { NextFunction, Request, Response, Router } from "express";
+import UserService from "../services/userService";
 import Controller from "./controller";
-import { getKnexInstance } from '../utils/dbInjector'
-import User from '../models/user';
-
-const PATH = '/users';
 
 class UserController implements Controller {
     public path = '/users';
@@ -21,7 +18,7 @@ class UserController implements Controller {
     }
 
     private getAllUsers = async (request: Request, response: Response, next: NextFunction) => {
-        const users = await getKnexInstance()<User>('user').select('*');
+        const users = await UserService.list();
         response.send(users);
     }
 
