@@ -1,4 +1,4 @@
-interface User {
+export interface UserDto {
     id: number;
     authId: string;
     firstName: string;
@@ -7,5 +7,3 @@ interface User {
     registeredAt: string;
     lastLogin: string;
 }
-
-export default User;

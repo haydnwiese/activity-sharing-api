@@ -1,10 +1,10 @@
-import User from "../models/user";
+import { UserDto } from "../dtos/userDto";
 import { getKnexInstance } from "../utils/dbInjector";
 
 class UserService {
 
     async list() {
-        return getKnexInstance()<User>('user').select('*');
+        return getKnexInstance()<UserDto>('user').select('*');
     }
 }
 
