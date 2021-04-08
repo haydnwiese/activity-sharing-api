@@ -20,24 +20,24 @@ class UserController implements Controller {
         this.router.get('/:id/event-feed', this.getEventFeedForUser);
     }
 
-    private listUsers = async (request: Request, response: Response, next: NextFunction) => {
+    private async listUsers(req: Request, res: Response) {
         const users = await UserService.list();
-        response.send(users);
+        res.send(users);
     }
 
-    private getUserById = async (request: Request, response: Response, next: NextFunction) => {
+    private async getUserById (req: Request, res: Response) {
         
     }
 
-    private getAllEventsOfUser = async (request: Request, response: Response, next: NextFunction) => {
+    private async getAllEventsOfUser (req: Request, res: Response) {
         
     }
     
-    private getEventFeedForUser = async (request: Request, response: Response, next: NextFunction) => {
+    private async getEventFeedForUser (req: Request, res: Response) {
         
     }
 
-    private async createUser(req: Request, res: Response, next: NextFunction) {
+    private async createUser(req: Request, res: Response) {
         req.body.id = null;
         const userId = await UserService.create(req.body);
         res.status(201).send({id: userId});
