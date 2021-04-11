@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { UserDto } from "../dtos/userDto";
+import userService from "../services/userService";
 import UserService from "../services/userService";
 import Controller from "./controller";
 
@@ -26,7 +27,8 @@ class UserController implements Controller {
     }
 
     private async getUserById (req: Request, res: Response) {
-        
+        const [ user ] = await userService.findById(req.params.id);
+        res.send(user);
     }
 
     private async getAllEventsOfUser (req: Request, res: Response) {

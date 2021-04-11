@@ -11,6 +11,10 @@ class UserService {
     async list() {
         return getKnexInstance()<UserDto>('user').select('*');
     }
+
+    async findById(resourceId: string) {
+        return getKnexInstance()<UserDto>('user').select('*').where('authId', resourceId)
+    }
 }
 
 export default new UserService();
