@@ -12,10 +12,12 @@ class EventService {
     }
 
     async findById(resourceId: string) {
-        return getKnexInstance()<EventDto>('event').select('*').where('id', resourceId);
+        return getKnexInstance()<EventDto>('event').select('*').where('id', resourceId).first;
     }
 
-    async findByCreatorId(creatorId: string) {
+    async findByCreatorId(creatorId: number) {
         return getKnexInstance()<EventDto>('event').select('*').where('creatorId', creatorId);
     }
 }
+
+export default new EventService();

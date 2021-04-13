@@ -32,9 +32,12 @@ class UserController implements Controller {
     }
 
     private async getAllEventsOfUser (req: Request, res: Response) {
-        const dbUserId = await userService.getIdByAuthId(req.params.id);
-        // const events = await eventService.findByCreatorId(dbUserId);
-        res.send(dbUserId);
+        // TODO: Error handling
+        const dbUserId = (await userService.getIdByAuthId(req.params.id))?.id;
+        if (dbUserId) {
+            const events = await eventService.findByCreatorId(dbUserId);   
+            res.send(events);
+        }
     }
     
     private async getEventFeedForUser (req: Request, res: Response) {

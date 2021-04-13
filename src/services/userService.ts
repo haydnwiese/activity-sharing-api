@@ -16,7 +16,7 @@ class UserService {
     }
 
     async getIdByAuthId(authId: string) {
-        return getKnexInstance()<UserDto>('user').select('id').where('authId', authId);
+        return getKnexInstance()<UserDto>('user').select('id').where('authId', authId).first();
     }
 }
 
