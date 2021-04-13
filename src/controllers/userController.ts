@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { UserDto } from "../dtos/userDto";
+import eventService from "../services/eventService";
 import userService from "../services/userService";
-import UserService from "../services/userService";
 import Controller from "./controller";
 
 class UserController implements Controller {
@@ -22,17 +22,22 @@ class UserController implements Controller {
     }
 
     private async listUsers(req: Request, res: Response) {
-        const users = await UserService.list();
+        const users = await userService.list();
         res.send(users);
     }
 
     private async getUserById (req: Request, res: Response) {
-        const [ user ] = await userService.findById(req.params.id);
+        const user = await userService.findByAuthId(req.params.id);
         res.send(user);
     }
 
     private async getAllEventsOfUser (req: Request, res: Response) {
-        
+        // TODO: Error handling
+        const dbUserId = (await userService.getIdByAuthId(req.params.id))?.id;
+        if (dbUserId) {
+            const events = await eventService.findByCreatorId(dbUserId);   
+            res.send(events);
+        }
     }
     
     private async getEventFeedForUser (req: Request, res: Response) {
@@ -41,7 +46,7 @@ class UserController implements Controller {
 
     private async createUser(req: Request, res: Response) {
         req.body.id = null;
-        const userId = await UserService.create(req.body);
+        const userId = await userService.create(req.body);
         res.status(201).send({id: userId});
     }
 }
