@@ -18,6 +18,24 @@ class EventService {
     async findByCreatorId(creatorId: number) {
         return getKnexInstance()<EventDto>('event').select('*').where('creatorId', creatorId);
     }
+
+    async getEventFeedForUser(userId: number) {
+        const knex = getKnexInstance();
+        return knex<EventDto>('event')
+            .select(
+                'event.*',
+                knex.raw('COUNT(invite.id)')
+            )
+            .leftJoin('invite', function() {
+                this.on('event.id', '=', 'invite.eventId')
+            })
+            .where(function () {
+                this
+                  .where('event.creatorId', userId)
+                  .orWhere('invite.targetId', userId)
+            })
+            .groupByRaw('event.id');
+    }
 }
 
 export default new EventService();
