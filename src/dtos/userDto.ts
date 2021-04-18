@@ -6,4 +6,5 @@ export interface UserDto {
     email: string;
     registeredAt: Date;
     lastLogin: string;
+    displayImageId: string;
 }

@@ -15,6 +15,12 @@ class UserService {
         return getKnexInstance()<UserDto>('user').where('authId', resourceId).first();
     }
 
+    async findDisplayImagesByIds(userIds: number[]) {
+        return getKnexInstance()<UserDto>('user')
+            .select('displayImageId')
+            .whereIn('id', userIds);
+    }
+
     async getIdByAuthId(authId: string) {
         return getKnexInstance()<UserDto>('user').select('id').where('authId', authId).first();
     }
