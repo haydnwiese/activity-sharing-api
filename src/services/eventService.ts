@@ -3,49 +3,30 @@ import { getKnexInstance } from "../utils/dbInjector";
 import inviteService from "../services/inviteService";
 import { InviteDto } from "../dtos/inviteDto";
 import userService from "./userService";
+import eventDao from "../daos/eventDao";
 
 const MAX_EVENT_ATTENDEE_IMAGE_URLS = 3;
 
 class EventService {
     async create(resource: EventDto) {
-        const [ eventId ] = await getKnexInstance()<EventDto>('event').insert(resource);
+        const [ eventId ] = await eventDao.addEvent(resource);
         return eventId;
     }
 
     async list() {
-        return getKnexInstance()<EventDto>('event').select('*');
+        return eventDao.getEvents();
     }
 
-    async findById(resourceId: string) {
-        return getKnexInstance()<EventDto>('event').select('*').where('id', resourceId).first;
+    async findById(resourceId: number) {
+        return eventDao.getEventById(resourceId);
     }
 
     async findByCreatorId(creatorId: number) {
-        return getKnexInstance()<EventDto>('event').select('*').where('creatorId', creatorId);
+        return eventDao.getEventsByCreatorId(creatorId);
     }
 
     async getEventFeedForUser(userId: number): Promise<EventDto[]> {
-        const knex = getKnexInstance();
-        const events = await knex('event')
-            .select(
-                'event.*',
-                knex.raw('COUNT(invite.id)')
-            )
-            .leftJoin('invite', function() {
-                this.on('event.id', '=', 'invite.eventId')
-            })
-            .whereRaw('event.scheduledAt >= CURDATE()')
-            .andWhere(function () {
-                this
-                  .where('event.creatorId', userId)
-                  .orWhere(function() {
-                      this
-                        .where('invite.targetId', userId)
-                        .andWhere('invite.status', 1)
-                  })
-            })
-            .groupByRaw('event.id');
-
+        const events = await eventDao.getUpcomingEventsByUserId(userId);
         const eventIds: number[] = events.map(event => event.id);
         
         const invites = await inviteService.findByEventIds(eventIds);
