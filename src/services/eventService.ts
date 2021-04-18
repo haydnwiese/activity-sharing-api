@@ -29,10 +29,15 @@ class EventService {
             .leftJoin('invite', function() {
                 this.on('event.id', '=', 'invite.eventId')
             })
-            .where(function () {
+            .whereRaw('event.scheduledAt >= CURDATE()')
+            .andWhere(function () {
                 this
                   .where('event.creatorId', userId)
-                  .orWhere('invite.targetId', userId)
+                  .orWhere(function() {
+                      this
+                        .where('invite.targetId', userId)
+                        .andWhere('invite.status', 1)
+                  })
             })
             .groupByRaw('event.id');
     }
