@@ -21,7 +21,7 @@ class EventService {
 
     async getEventFeedForUser(userId: number) {
         const knex = getKnexInstance();
-        return knex<EventDto>('event')
+        return knex('event')
             .select(
                 'event.*',
                 knex.raw('COUNT(invite.id)')

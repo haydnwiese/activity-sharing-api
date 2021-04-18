@@ -17,7 +17,7 @@ class UserService {
 
     async findDisplayImagesByIds(userIds: number[]) {
         return getKnexInstance()<UserDto>('user')
-            .select('displayImageId')
+            .select('id', 'displayImageId')
             .whereIn('id', userIds);
     }
 
