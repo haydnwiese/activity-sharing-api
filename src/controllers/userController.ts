@@ -77,16 +77,16 @@ class UserController implements Controller {
 
             const returnEvents: EventDto[] = [];
             events.forEach(event => {
-                const usersAttendingPreviewUrls: string[] = [];
+                const userDisplayImageUrls: string[] = [];
                 eventIdToUserIdListMap.get(event.id)?.forEach(userId => {
                     const displayImageUrl = userIdToImageIdMap.get(userId)
                     if (displayImageUrl)
-                        usersAttendingPreviewUrls.push(displayImageUrl);
+                        userDisplayImageUrls.push(displayImageUrl);
                 })
 
                 returnEvents.push({
                     ...event,
-                    usersAttendingPreviewUrls
+                    userDisplayImageUrls
                 })
             })
             
