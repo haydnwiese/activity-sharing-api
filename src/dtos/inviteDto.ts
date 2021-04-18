@@ -4,5 +4,11 @@ export interface InviteDto {
     sourceId: number;
     targetId: number;
     createdAt: Date;
-    status: number;
+    status: InviteStatus;
+}
+
+export enum InviteStatus {
+    Sent,
+    Accepted,
+    Declined
 }
