@@ -1,4 +1,4 @@
-import { EventDto } from "../dtos/eventDto";
+import { EventDto, UpcomingEventDto } from "../dtos/eventDto";
 import { getKnexInstance } from "../utils/dbInjector";
 
 class EventDao {
@@ -18,12 +18,12 @@ class EventDao {
         return getKnexInstance()<EventDto>('event').select('*').where('creatorId', creatorId);
     }
 
-    async getUpcomingEventsByUserId(userId: number): Promise<EventDto[]> {
+    async getUpcomingEventsByUserId(userId: number): Promise<UpcomingEventDto[]> {
         const knex = getKnexInstance();
         return knex('event')
             .select(
                 'event.*',
-                knex.raw('COUNT(invite.id) as attendeeCount')
+                knex.raw('SUM(CASE WHEN invite.id IS NOT NULL AND invite.status = 1 THEN 1 ELSE 0 END) AS attendeeCount')
             )
             .leftJoin('invite', function() {
                 this.on('event.id', '=', 'invite.eventId')

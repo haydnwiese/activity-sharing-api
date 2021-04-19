@@ -1,4 +1,4 @@
-import { EventDto } from "../dtos/eventDto";
+import { EventDto, UpcomingEventDto } from "../dtos/eventDto";
 import { getKnexInstance } from "../utils/dbInjector";
 import inviteService from "../services/inviteService";
 import { InviteDto } from "../dtos/inviteDto";
@@ -25,7 +25,7 @@ class EventService {
         return eventDao.getEventsByCreatorId(creatorId);
     }
 
-    async getEventFeedForUser(userId: number): Promise<EventDto[]> {
+    async getEventFeedForUser(userId: number): Promise<UpcomingEventDto[]> {
         const events = await eventDao.getUpcomingEventsByUserId(userId);
         const eventIds: number[] = events.map(event => event.id);
         
@@ -46,6 +46,9 @@ class EventService {
                     userDisplayImageUrls.push(displayImageUrl);
             })
 
+            // Update attendee count to include event creator
+            event.attendeeCount++;
+            
             return {
                 ...event,
                 userDisplayImageUrls

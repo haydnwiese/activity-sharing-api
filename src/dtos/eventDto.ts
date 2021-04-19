@@ -7,3 +7,8 @@ export interface EventDto {
     scheduledAt: Date;
     remoteImageId: string;
 }
+
+export interface UpcomingEventDto extends EventDto {
+    attendeeCount: number;
+    userDisplayImageUrls: string[];
+}
