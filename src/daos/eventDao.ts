@@ -22,8 +22,7 @@ class EventDao {
         const knex = getKnexInstance();
         return knex('event')
             .select(
-                'event.*',
-                knex.raw('SUM(CASE WHEN invite.id IS NOT NULL AND invite.status = 1 THEN 1 ELSE 0 END) AS attendeeCount')
+                'event.*'
             )
             .leftJoin('invite', function() {
                 this.on('event.id', '=', 'invite.eventId')

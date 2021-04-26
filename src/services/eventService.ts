@@ -46,8 +46,7 @@ class EventService {
                     userDisplayImageUrls.push(displayImageUrl);
             })
 
-            // Update attendee count to include event creator
-            event.attendeeCount++;
+            event.attendeeCount = invites.filter(invite => invite.eventId == event.id && invite.status == 1).length + 1;
             
             return {
                 ...event,
