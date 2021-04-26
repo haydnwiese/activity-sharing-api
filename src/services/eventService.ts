@@ -30,7 +30,7 @@ class EventService {
         const eventIds: number[] = events.map(event => event.id);
         
         const invites = await inviteService.findByEventIds(eventIds);
-        const eventIdToUserIdListMap = this.generateEventIdToUserIdListMap(invites);
+        const eventIdToUserIdListMap = this.generateEventIdToUserIdListMap(events, invites);
         const attendingUserIds = this.extractUniqueUserIdsFromMap(eventIdToUserIdListMap);
 
         const userImageIds = await userService.findDisplayImagesByIds(attendingUserIds);
@@ -56,8 +56,15 @@ class EventService {
         })
     }
 
-    private generateEventIdToUserIdListMap(invites: InviteDto[]) {
+    private generateEventIdToUserIdListMap(events: UpcomingEventDto[], invites: InviteDto[]) {
         const eventIdToUserIdListMap = new Map<number, number[]>();
+        
+        // Add the creator of each event as the first display image
+        events.forEach(({ id, creatorId }) => {
+            eventIdToUserIdListMap.set(id, [creatorId])
+        });
+
+        // Add additional display images for the attendees of each event
         invites.forEach(invite => {
             const userIdList = eventIdToUserIdListMap.get(invite.eventId);
             if (userIdList) {
