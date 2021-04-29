@@ -1,28 +1,26 @@
+import userDao from "../daos/userDao";
 import { UserDto } from "../dtos/userDto";
 import { getKnexInstance } from "../utils/dbInjector";
 
 class UserService {
     async create(resource: UserDto) {
-        const [ userId ] = await getKnexInstance()<UserDto>('user').insert(resource);
-        return userId;
+        return userDao.addUser(resource);
     }
 
     async list() {
-        return getKnexInstance()<UserDto>('user').select('*');
+        return userDao.getUsers();
     }
 
     async findByAuthId(resourceId: string) {
-        return getKnexInstance()<UserDto>('user').where('authId', resourceId).first();
+        return userDao.getUserByAuthId(resourceId);
     }
 
     async findDisplayImagesByIds(userIds: number[]) {
-        return getKnexInstance()<UserDto>('user')
-            .select('id', 'displayImageId')
-            .whereIn('id', userIds);
+        return userDao.getDisplayImagesByIds(userIds);
     }
 
     async getIdByAuthId(authId: string) {
-        return getKnexInstance()<UserDto>('user').select('id').where('authId', authId).first();
+        return userDao.getIdByAuthId(authId);
     }
 }
 
