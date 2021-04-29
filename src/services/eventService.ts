@@ -1,4 +1,4 @@
-import { EventDto, UpcomingEventDto } from "../dtos/eventDto";
+import { EventDto, ExtendedEventDto } from "../dtos/eventDto";
 import { getKnexInstance } from "../utils/dbInjector";
 import inviteService from "../services/inviteService";
 import { InviteDto } from "../dtos/inviteDto";
@@ -25,8 +25,17 @@ class EventService {
         return eventDao.getEventsByCreatorId(creatorId);
     }
 
-    async getEventFeedForUser(userId: number): Promise<UpcomingEventDto[]> {
+    async getExtendedEventsForUser(creatorId: number): Promise<ExtendedEventDto[]> {
+        const events = await this.findByCreatorId(creatorId);
+        return this.generateExtendedEventList(events);
+    }
+
+    async getEventFeedForUser(userId: number): Promise<ExtendedEventDto[]> {
         const events = await eventDao.getUpcomingEventsByUserId(userId);
+        return this.generateExtendedEventList(events);
+    }
+
+    private async generateExtendedEventList(events: any[]): Promise<ExtendedEventDto[]> {
         const eventIds: number[] = events.map(event => event.id);
         
         const invites = await inviteService.findByEventIds(eventIds);
@@ -55,7 +64,7 @@ class EventService {
         })
     }
 
-    private generateEventIdToUserIdListMap(events: UpcomingEventDto[], invites: InviteDto[]) {
+    private generateEventIdToUserIdListMap(events: ExtendedEventDto[], invites: InviteDto[]) {
         const eventIdToUserIdListMap = new Map<number, number[]>();
         
         // Add the creator of each event as the first display image

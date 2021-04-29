@@ -1,4 +1,4 @@
-import { EventDto, UpcomingEventDto } from "../dtos/eventDto";
+import { EventDto, ExtendedEventDto } from "../dtos/eventDto";
 import { getKnexInstance } from "../utils/dbInjector";
 
 class EventDao {
@@ -18,7 +18,7 @@ class EventDao {
         return getKnexInstance()<EventDto>('event').select('*').where('creatorId', creatorId);
     }
 
-    async getUpcomingEventsByUserId(userId: number): Promise<UpcomingEventDto[]> {
+    async getUpcomingEventsByUserId(userId: number) {
         const knex = getKnexInstance();
         return knex('event')
             .select(

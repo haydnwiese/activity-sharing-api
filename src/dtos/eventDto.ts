@@ -8,7 +8,7 @@ export interface EventDto {
     remoteImageId: string;
 }
 
-export interface UpcomingEventDto extends EventDto {
+export interface ExtendedEventDto extends EventDto {
     attendeeCount: number;
     userDisplayImageUrls: string[];
 }

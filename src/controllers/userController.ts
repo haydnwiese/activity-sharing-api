@@ -22,6 +22,7 @@ class UserController implements Controller {
             .get(this.listUsers)
             .post(this.createUser);
         this.router.get('/:id', this.getUserById);
+        this.router.get('/:id/profile', this.getProfileById)
         this.router.get('/:id/events', this.getAllEventsOfUser);
         this.router.get('/:id/event-feed', this.getEventFeedForUser);
     }
@@ -31,21 +32,25 @@ class UserController implements Controller {
         res.send(users);
     }
 
-    private async getUserById (req: Request, res: Response) {
+    private async getUserById(req: Request, res: Response) {
         const user = await userService.findByAuthId(req.params.id);
         res.send(user);
     }
 
-    private async getAllEventsOfUser (req: Request, res: Response) {
+    private async getProfileById(req: Request, res: Response) {
+
+    }
+
+    private async getAllEventsOfUser(req: Request, res: Response) {
         // TODO: Error handling
         const dbUserId = (await userService.getIdByAuthId(req.params.id))?.id;
         if (dbUserId) {
-            const events = await eventService.findByCreatorId(dbUserId);   
+            const events = await eventService.getExtendedEventsForUser(dbUserId); 
             res.send(events);
         }
     }
     
-    private async getEventFeedForUser (req: Request, res: Response) {
+    private async getEventFeedForUser(req: Request, res: Response) {
         const dbUserId = (await userService.getIdByAuthId(req.params.id))?.id;
         if (dbUserId) {
             const events = await eventService.getEventFeedForUser(dbUserId);
