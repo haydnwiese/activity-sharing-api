@@ -38,8 +38,8 @@ class EventService {
     private async generateExtendedEventList(events: any[]): Promise<ExtendedEventDto[]> {
         const eventIds: number[] = events.map(event => event.id);
         
-        const invites = await inviteService.findByEventIds(eventIds);
-        const eventIdToUserIdListMap = this.generateEventIdToUserIdListMap(events, invites);
+        const acceptedInvites = await inviteService.findAcceptedInvitesByEventIds(eventIds);
+        const eventIdToUserIdListMap = this.generateEventIdToUserIdListMap(events, acceptedInvites);
         const attendingUserIds = this.extractUniqueUserIdsFromMap(eventIdToUserIdListMap);
 
         const userImageIds = await userService.findDisplayImagesByIds(attendingUserIds);
@@ -55,7 +55,7 @@ class EventService {
                     userDisplayImageUrls.push(displayImageUrl);
             })
 
-            event.attendeeCount = invites.filter(invite => invite.eventId == event.id && invite.status == 1).length + 1;
+            event.attendeeCount = acceptedInvites.filter(invite => invite.eventId == event.id).length + 1;
             
             return {
                 ...event,

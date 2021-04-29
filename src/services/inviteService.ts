@@ -1,4 +1,4 @@
-import { InviteDto } from '../dtos/inviteDto'; 
+import { InviteDto, InviteStatus } from '../dtos/inviteDto'; 
 import { getKnexInstance } from "../utils/dbInjector";
 
 class InviteService {
@@ -14,10 +14,10 @@ class InviteService {
         return getKnexInstance()<InviteDto>('invite').where('eventId', eventId);
     }
 
-    async findByEventIds(eventIds: number[]) {
+    async findAcceptedInvitesByEventIds(eventIds: number[]) {
         return getKnexInstance()<InviteDto>('invite')
             .whereIn('eventId', eventIds)
-            .andWhere('status', 1);
+            .andWhere('status', InviteStatus.Accepted);
     }
 }
 
