@@ -1,4 +1,4 @@
-import { EventDto, ExtendedEventDto } from "../dtos/eventDto";
+import { EventDto } from "../dtos/eventDto";
 import { getKnexInstance } from "../utils/dbInjector";
 
 class EventDao {

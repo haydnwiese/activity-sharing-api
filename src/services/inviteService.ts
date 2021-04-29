@@ -1,23 +1,21 @@
-import { InviteDto, InviteStatus } from '../dtos/inviteDto'; 
-import { getKnexInstance } from "../utils/dbInjector";
+import inviteDao from '../daos/inviteDao';
+import { InviteDto } from '../dtos/inviteDto'; 
 
 class InviteService {
     async create(resource: InviteDto) {
-        return await getKnexInstance()<InviteDto>('invite').insert(resource).first();
+        return inviteDao.addInvite(resource);
     }
 
     async findById(inviteId: number) {
-        return getKnexInstance()<InviteDto>('invite').where('id', inviteId).first();
+        return inviteDao.findById(inviteId);
     }
 
     async findByEventId(eventId: number) {
-        return getKnexInstance()<InviteDto>('invite').where('eventId', eventId);
+        return inviteDao.findByEventId(eventId);
     }
 
     async findAcceptedInvitesByEventIds(eventIds: number[]) {
-        return getKnexInstance()<InviteDto>('invite')
-            .whereIn('eventId', eventIds)
-            .andWhere('status', InviteStatus.Accepted);
+        return inviteDao.findAcceptedInvitesByEventIds(eventIds);
     }
 }
 
