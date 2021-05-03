@@ -1,4 +1,5 @@
 import { UserDto } from "../dtos/userDto";
+import { UserFriendDto, UserFriendStatus } from "../dtos/userFriendDto";
 import { getKnexInstance } from "../utils/dbInjector";
 
 class UserDao {
@@ -8,6 +9,10 @@ class UserDao {
 
     async getUsers() {
         return getKnexInstance()<UserDto>('user').select('*');
+    }
+
+    async getUserById(userId: number) {
+        return getKnexInstance()<UserDto>('user').where('id', userId).first();
     }
 
     async getUserByAuthId(resourceId: string) {
@@ -22,6 +27,17 @@ class UserDao {
 
     async getIdByAuthId(authId: string) {
         return getKnexInstance()<UserDto>('user').select('id').where('authId', authId).first();
+    }
+    
+    async getFriendsForUser(userId: number) {
+        return getKnexInstance()<UserFriendDto>('user_friend')
+            .select('*')
+            .where('status', UserFriendStatus.Accepted)
+            .andWhere(function() {
+                this
+                    .where('sourceId', userId)
+                    .orWhere('targetId', userId)
+            })
     }
 }
 

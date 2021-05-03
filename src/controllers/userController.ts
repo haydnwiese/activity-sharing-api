@@ -38,7 +38,9 @@ class UserController implements Controller {
     }
 
     private async getProfileById(req: Request, res: Response) {
-
+        const userId = parseInt(req.params.id);
+        const profileData = await userService.getUserProfile(userId);
+        res.send(profileData);
     }
 
     private async getAllEventsOfUser(req: Request, res: Response) {
